@@ -1,0 +1,21 @@
+# Override values for argocd pod.
+# repositories:
+#   - url: https://github.com/powersparks/my-next-app.git
+#     passwordSecret:
+#       name: github-credentials
+#       key: password
+#     usernameSecret:
+#       name: github-credentials
+#       key: username
+# This is a YAML-formatted file.
+repoServer:
+  volumes:
+    - name: local-repo
+      hostPath:
+        path: /Users/harleyparks/repos/local/earthquake-app
+        type: Directory
+  volumeMounts:
+    - name: local-repo
+      mountPath: /mnt/argocd-repo
+      readOnly: true
+

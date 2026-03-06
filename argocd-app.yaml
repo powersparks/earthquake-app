@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: earthquake-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: file:////mnt/argocd-repo 
+    # repoURL: file:////Users/harleyparks/repos/local/my-next-app/
+    # repoURL: https://github.com/powersparks/my-next-app.git
+    targetRevision: main
+    path: helm/earthquake-app-chart
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
