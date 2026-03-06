@@ -1,0 +1,269 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.header {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 40px 20px;
+  text-align: center;
+  border-bottom: 3px solid #667eea;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.header p {
+  margin: 0;
+  font-size: 1.2em;
+  opacity: 0.9;
+}
+
+.statusBadge {
+  margin-top: 15px;
+}
+
+.statusHealthy {
+  background: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.statusError {
+  background: #f44336;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.main {
+  flex: 1;
+  padding: 30px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.controls {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.filterForm {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.formGroup label {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.9em;
+}
+
+.formGroup input {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.filterForm button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  align-self: flex-end;
+  transition: background 0.3s;
+}
+
+.filterForm button:hover:not(:disabled) {
+  background: #5568d3;
+}
+
+.filterForm button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.refreshForm {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.refreshForm label {
+  font-weight: bold;
+  color: #333;
+}
+
+.refreshForm input {
+  width: 60px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.refreshForm span {
+  color: #666;
+}
+
+.refreshForm button {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.refreshForm button:hover:not(:disabled) {
+  background: #e68900;
+}
+
+.refreshForm button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.errorMessage {
+  background: #f44336;
+  color: white;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.results {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.results h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+.noResults {
+  text-align: center;
+  color: #999;
+  padding: 40px 20px;
+  font-size: 1.1em;
+}
+
+.earthquakeList {
+  margin-top: 30px;
+}
+
+.earthquakeList h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.earthquakeList table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.earthquakeList th {
+  background: #f5f5f5;
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+  color: #333;
+}
+
+.earthquakeList td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.earthquakeList tr:hover {
+  background: #f9f9f9;
+}
+
+.magnitude {
+  font-weight: bold;
+  color: #ff6f00;
+}
+
+.brushStats {
+  background: #e3f2fd;
+  border: 1px solid #667eea;
+  padding: 15px;
+  border-radius: 4px;
+  margin: 20px 0;
+  color: #333;
+  font-size: 0.95em;
+}
+
+.footer {
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  padding: 20px;
+  border-top: 1px solid #667eea;
+}
+
+.footer a {
+  color: #64b5f6;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 1.8em;
+  }
+
+  .filterForm {
+    flex-direction: column;
+  }
+
+  .filterForm button {
+    align-self: stretch;
+  }
+
+  .earthquakeList table {
+    font-size: 0.9em;
+  }
+
+  .earthquakeList th,
+  .earthquakeList td {
+    padding: 8px;
+  }
+}
