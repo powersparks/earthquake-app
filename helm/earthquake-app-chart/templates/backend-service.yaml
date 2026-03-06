@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "earthquake-app-chart.fullname" . }}-backend
+  labels:
+    {{- include "earthquake-app-chart.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "earthquake-app-chart.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: backend

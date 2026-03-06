@@ -27,8 +27,9 @@ RUN npm ci --only=production
 
 # Copy built app from builder
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
-
+# Copy public if it exists (optional)
+## COPY --from=builder /app/public ./public 2>/dev/null || true
+RUN if [ -d /app/public ]; then cp -r /app/public ./public; fi
 # Expose port
 EXPOSE 3000
 
