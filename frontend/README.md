@@ -73,3 +73,6 @@ The frontend communicates with the backend at endpoints:
 - `POST /refresh` — Refresh data from USGS
 
 See `lib/api.js` for API client implementation.
+
+
+helm upgrade earthquake ./helm/earthquake-app-chart

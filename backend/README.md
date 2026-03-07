@@ -99,3 +99,6 @@ For Kubernetes deployment, pass these as environment variables:
 - `DATABASE_PASSWORD`: PostgreSQL password (default: postgres)
 - `DATABASE_NAME`: Database name (default: earthquake_db)
 - `DEBUG`: Enable debug mode (default: false)
+
+docker build -t earthquake-backend:latest .
+kubectl rollout restart deployment/earthquake-app-earthquake-app-chart-backend
