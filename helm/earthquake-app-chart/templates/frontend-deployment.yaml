@@ -42,7 +42,8 @@ spec:
           protocol: TCP
         env:
         - name: NEXT_PUBLIC_API_URL
-          value: "http://{{ include "earthquake-app-chart.fullname" . }}-backend:8000"
+          value: "http://earthquake-app-earthquake-app-chart-backend.default.svc.cluster.local:8000"
+
         livenessProbe:
           httpGet:
             path: /
