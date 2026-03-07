@@ -12,11 +12,8 @@ CHARTS=(
 CLUSTER_TYPE="docker-desktop"  # Default: kind or docker-desktop
 CLUSTER_NAME="earthquake-app-cluster"
 TARGET_CONTEXT="docker-desktop" # Default docker-desktop or kind-$CLUSTER_NAME
-# KUBE_CONTEXT="docker-desktop" # Default: docker-desktop or kind-my-next-app-cluster
-# kubectl config use-context docker-desktop
 NAMESPACE="default"
 ARGOCD_NAMESPACE="argocd"
-
 
 # Get repo name dynamically
 get_repo_name() {
@@ -126,6 +123,7 @@ setup_kind() {
   validate_context "kind-${CLUSTER_NAME}" "kind"
   
   install_argocd
+  install_trivy
   deploy_app
   
   echo "=== Setup complete (kind) ==="
@@ -144,6 +142,7 @@ setup_docker_desktop() {
   validate_context "docker-desktop" "docker-desktop"
  
   install_argocd
+  install_trivy
   deploy_app
   
   echo "=== Setup complete (Docker Desktop) ==="
@@ -159,6 +158,19 @@ install_argocd() {
   # Wait for ArgoCD to be ready
   echo "Waiting for ArgoCD to be ready..."
   kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n "$ARGOCD_NAMESPACE"
+}
+
+install_trivy() {
+  echo "Installing Trivy Operator..."
+  helm repo add aquasecurity https://aquasecurity.github.io/helm-charts/
+  helm repo update
+  helm install trivy-operator aquasecurity/trivy-operator \
+    -n trivy-system \
+    --create-namespace \
+    -f trivy-values.yaml
+  
+  echo "Waiting for Trivy Operator to be ready..."
+  kubectl wait --for=condition=available --timeout=300s deployment/trivy-operator -n trivy-system
 }
 
 deploy_app() {
@@ -189,16 +201,6 @@ teardown_docker_desktop() {
   echo "Switching kubectl context to docker-desktop..."
   kubectl config use-context docker-desktop
   
-  # Scale down app to 0 replicas
-  # echo "Scaling down application..."
-  # for CHART_YAML in ${CHARTS_YAML[@]}; do
-  #   sed -i '' 's/replicaCount: .*/replicaCount: 0/' $CHART_YAML
-  #   git -C "$REPO_PATH" add $CHART_YAML
-  #   git -C "$REPO_PATH" commit -m "Scale down to 0 replicas, auto-commit" || true
-  # done
- 
-  # sleep 10
-
   echo "Uninstalling charts in default namespace..."
   for CHART in ${CHARTS[@]}; do
   helm uninstall $CHART 2>/dev/null || true
@@ -208,6 +210,9 @@ teardown_docker_desktop() {
   echo "Uninstall ARGOCD and delete argocd namespace..."
   helm uninstall argocd -n "$ARGOCD_NAMESPACE" 2>/dev/null || true
   kubectl delete namespace "$ARGOCD_NAMESPACE" 2>/dev/null || true
+  echo "Uninstall Trivy and delete trivy-system namespace..."
+  helm uninstall trivy-operator -n trivy-system 2>/dev/null || true
+  kubectl delete namespace trivy-system 2>/dev/null || true
 
   echo "=== Teardown complete (Docker Desktop) ==="
 }
@@ -260,4 +265,3 @@ case "$COMMAND" in
     usage
     ;;
 esac
- 

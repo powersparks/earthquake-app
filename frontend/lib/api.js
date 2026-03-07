@@ -1,18 +1,16 @@
 /**
- * API client for communicating with the earthquake backend.
+ * API client for communicating with the earthquake backend via Next.js proxy routes.
  */
 
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-
 export const apiClient = axios.create({
-  baseURL: API_URL,
+  baseURL: '/',
   timeout: 10000,
 });
 
 /**
- * Fetch earthquakes from backend API.
+ * Fetch earthquakes from backend API (via proxy).
  * 
  * @param {Object} params - Query parameters
  * @param {string} params.start_date - Start date (YYYY-MM-DD)
@@ -22,7 +20,7 @@ export const apiClient = axios.create({
  */
 export async function fetchEarthquakes(params = {}) {
   try {
-    const response = await apiClient.get('/earthquakes', { params });
+    const response = await apiClient.get('/api/earthquakes', { params });
     return response.data;
   } catch (error) {
     console.error('Error fetching earthquakes:', error);
@@ -31,14 +29,14 @@ export async function fetchEarthquakes(params = {}) {
 }
 
 /**
- * Refresh earthquake data from USGS API.
+ * Refresh earthquake data from USGS API (via proxy).
  * 
  * @param {number} days - Number of days to fetch (default: 1)
  * @returns {Promise<Object>} Refresh status
  */
 export async function refreshEarthquakes(days = 1) {
   try {
-    const response = await apiClient.post('/refresh', null, {
+    const response = await apiClient.post('/api/refresh', null, {
       params: { days },
     });
     return response.data;
@@ -49,14 +47,15 @@ export async function refreshEarthquakes(days = 1) {
 }
 
 /**
- * Check backend health.
+ * Check backend health (via direct call).
  * 
  * @returns {Promise<Object>} Health status
  */
 export async function checkHealth() {
   try {
-    const response = await apiClient.get('/health');
-    return response.data;
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+    const response = await fetch(`${backendUrl}/health`);
+    return response.json();
   } catch (error) {
     console.error('Error checking health:', error);
     throw error;
