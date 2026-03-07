@@ -28,9 +28,9 @@ backend:
   enabled: true
   replicaCount: 1
   image:
-    repository: earthquake-backend
+    repository: powersparks/earthquake-backend
     tag: "latest"
-    pullPolicy: Never
+    pullPolicy: IfNotPresent
   service:
     type: ClusterIP
     port: 8000
@@ -40,9 +40,9 @@ frontend:
   enabled: true
   replicaCount: 1
   image:
-    repository: earthquake-frontend
+    repository: powersparks/earthquake-frontend
     tag: "latest"
-    pullPolicy: Never
+    pullPolicy: IfNotPresent
   service:
     type: NodePort
     port: 3000
