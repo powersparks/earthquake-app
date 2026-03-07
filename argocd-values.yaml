@@ -34,13 +34,5 @@ postgresqlServer:
             storage: 1Gi
 server:
   extensions:
-    enabled: true
-    extensionList:
-      - name: extension-trivy
-        env:
-          # URLs used in example are for the latest release, replace with the desired version if needed
-          - name: EXTENSION_URL
-            value: https://github.com/mziyabo/argocd-trivy-extension/releases/latest/download/extension-trivy.tar
-          - name: EXTENSION_CHECKSUM_URL
-            value: https://github.com/mziyabo/argocd-trivy-extension/releases/latest/download/extension-trivy_checksums.txt
+    enabled: false
 
