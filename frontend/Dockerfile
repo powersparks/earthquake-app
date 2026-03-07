@@ -10,12 +10,16 @@ RUN npm ci
 
 # Copy source code
 COPY . .
-
+ARG NEXT_PUBLIC_API_URL=http://earthquake-app-earthquake-app-chart-backend:8000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 # Build Next.js app
 RUN npm run build
 
 # Production stage
 FROM node:18-alpine
+
+ARG NEXT_PUBLIC_API_URL=http://earthquake-app-earthquake-app-chart-backend:8000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 WORKDIR /app
 
