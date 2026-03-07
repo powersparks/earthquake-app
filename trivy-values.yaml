@@ -2,6 +2,21 @@ trivy:
   dbRepository: ghcr.io/aquasecurity/trivy-db
   image:
     tag: "0.53.0"
+
 scanJob:
   image:
     tag: "0.53.0"
+
+serviceMonitor:
+  enabled: false
+
+trivy-operator:
+  scanJob:
+    scanOnlyCurrentRevisions: true
+
+namespaceSelector:
+  matchLabels: {}
+  # Scan all namespaces by default
+
+podSecurityStandards:
+  enabled: false
