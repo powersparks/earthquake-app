@@ -38,7 +38,7 @@ backend:
 # Frontend configuration
 frontend:
   enabled: true
-  replicaCount: 2
+  replicaCount: 1
   image:
     repository: earthquake-frontend
     tag: "latest"
