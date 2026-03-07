@@ -2,10 +2,16 @@ trivy:
   dbRepository: ghcr.io/aquasecurity/trivy-db
   image:
     tag: "0.53.0"
+  vulnType: "os,library"
+
+vulnerabilityReports:
+  scannerName: Trivy
 
 scanJob:
   image:
     tag: "0.53.0"
+  scanners:
+    - Vulnerability
 
 serviceMonitor:
   enabled: false
