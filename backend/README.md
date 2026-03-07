@@ -102,3 +102,6 @@ For Kubernetes deployment, pass these as environment variables:
 
 docker build -t earthquake-backend:latest .
 kubectl rollout restart deployment/earthquake-app-earthquake-app-chart-backend
+![REST API Doc](./docs.png "Earthquake Data API")
+http://localhost:8000/docs
+kubectl rollout restart deployment/earthquake-app-earthquake-app-chart-frontend
