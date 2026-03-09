@@ -123,7 +123,6 @@ setup_kind() {
   validate_context "kind-${CLUSTER_NAME}" "kind"
   
   install_argocd
-  install_trivy
   deploy_app
   
   echo "=== Setup complete (kind) ==="
@@ -142,7 +141,6 @@ setup_docker_desktop() {
   validate_context "docker-desktop" "docker-desktop"
  
   install_argocd
-  install_trivy
   deploy_app
   
   echo "=== Setup complete (Docker Desktop) ==="
@@ -160,17 +158,13 @@ install_argocd() {
   kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n "$ARGOCD_NAMESPACE"
 }
 
-install_trivy() {
   echo "Installing Trivy Operator..."
   helm repo add aquasecurity https://aquasecurity.github.io/helm-charts/
   helm repo update
-  helm install trivy-operator aquasecurity/trivy-operator \
-    -n trivy-system \
     --create-namespace \
     -f trivy-values.yaml
   
   echo "Waiting for Trivy Operator to be ready..."
-  kubectl wait --for=condition=available --timeout=300s deployment/trivy-operator -n trivy-system
 }
 
 deploy_app() {
@@ -210,9 +204,6 @@ teardown_docker_desktop() {
   echo "Uninstall ARGOCD and delete argocd namespace..."
   helm uninstall argocd -n "$ARGOCD_NAMESPACE" 2>/dev/null || true
   kubectl delete namespace "$ARGOCD_NAMESPACE" 2>/dev/null || true
-  echo "Uninstall Trivy and delete trivy-system namespace..."
-  helm uninstall trivy-operator -n trivy-system 2>/dev/null || true
-  kubectl delete namespace trivy-system 2>/dev/null || true
 
   echo "=== Teardown complete (Docker Desktop) ==="
 }
