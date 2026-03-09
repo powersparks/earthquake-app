@@ -153,14 +153,15 @@ export default function Timeline({ data = [], onBrushChange = null }) {
             .extent([[0, 0], [width, height]])
             .on("brush end", master_feedback);
 
-                // Append brush to master chart
+    // Append brush to master chart
+/******
     svg.append("g")
         .attr("class", "brush brush-sensor brush-sensor-master")
       //  .attr("rx": "20")
         //.attr("ry": "20")
         .call(brush_sensor_master)
         .call(brush_sensor_master.move, null); //_masterChart().x.range());
-
+*******/
         var handles_chart = svg.selectAll(".handle");
         handles_chart
         .attr("width",20)
