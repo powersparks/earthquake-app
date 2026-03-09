@@ -34,7 +34,8 @@ kubectl get vulnerabilityreports -A
 trivy-operator
 
 kubectl port-forward svc/trivy-operator -n trivy-system 8080:80  
-
+ 
+kubectl port-forward svc/earthquake-app-earthquake-app-chart-backend -n trivy-system 8000:8000  
 helm upgrade argocd argo/argo-cd -n argocd -f argocd-values.yaml
 
 https://aquasecurity.github.io/trivy-operator/latest/#option-1-install-from-traditional-helm-chart-repository
