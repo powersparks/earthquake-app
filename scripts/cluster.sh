@@ -158,15 +158,6 @@ install_argocd() {
   kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n "$ARGOCD_NAMESPACE"
 }
 
-  echo "Installing Trivy Operator..."
-  helm repo add aquasecurity https://aquasecurity.github.io/helm-charts/
-  helm repo update
-    --create-namespace \
-    -f trivy-values.yaml
-  
-  echo "Waiting for Trivy Operator to be ready..."
-}
-
 deploy_app() {
   # Apply ArgoCD Application CRD
   echo "Deploying application via ArgoCD..."
