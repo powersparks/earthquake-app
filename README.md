@@ -61,3 +61,8 @@ kubectl get vulnerabilityreport -n default -o json | jq '.items[] | {image: .rep
 
   kubectl get vulnerabilityreport replicaset-574d86cd58 -n default -o json | jq '.report.vulnerabilities[] | "\(.vulnerabilityID) - \(.resource) - \(.severity) - Fix: \(.fixedVersion)"'
 
+  kubectl port-forward svc/earthquake-app-earthquake-app-chart-frontend  3000:3000  
+
+  kubectl port-forward service/argocd-server -n argocd 6443:443 
+
+
