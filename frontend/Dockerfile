@@ -6,9 +6,9 @@ WORKDIR /app
 COPY package.json package-lock.json* yarn.lock* ./
 
 # NOTE: if you don't have the certs or don't need them, comment out
-# RUN npm set strict-ssl false
-COPY ./cert/Zscaler-bundle.pem /usr/local/share/ca-certificates/Zscaler-bundle.crt  
-ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/Zscaler-bundle.crt
+RUN npm set strict-ssl false
+# COPY ./cert/Zscaler-bundle.pem /usr/local/share/ca-certificates/Zscaler-bundle.crt  
+# ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/Zscaler-bundle.crt
 # Install dependencies
 RUN npm ci
 
