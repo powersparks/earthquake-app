@@ -31,3 +31,32 @@ helm install trivy-operator aquasecurity/trivy-operator \
 
 kubectl get imageauditreports -A
 kubectl get vulnerabilityreports -A
+trivy-operator
+
+kubectl port-forward svc/trivy-operator -n trivy-system 8080:80  
+
+helm upgrade argocd argo/argo-cd -n argocd -f argocd-values.yaml
+
+https://aquasecurity.github.io/trivy-operator/latest/#option-1-install-from-traditional-helm-chart-repository
+
+  helm repo add aqua https://aquasecurity.github.io/helm-charts/
+   helm repo update
+
+      helm install trivy-operator aqua/trivy-operator \
+     --namespace trivy-system \
+     --create-namespace \
+     --version 0.32.0
+
+helm uninstall trivy-operator -n trivy-system
+helm install trivy-operator aquasecurity/trivy-operator \
+  --namespace trivy-system \
+  --version 0.32.0 \
+  -f trivy-values.yaml
+read only on the private images:
+  dckr_pat_B6cehqUjPOicNZhtj4iGTHAD-kM
+
+kubectl get vulnerabilityreport -n default -o json | jq '.items[] | {image: .report.artifact.repository, vulnerabilities: .report.vulnerabilities[] | {cve: .vulnerabilityID, severity: .severity, package: .resource, fixedVersion: .fixedVersion}}' > vulnerabilities.json
+
+
+  kubectl get vulnerabilityreport replicaset-574d86cd58 -n default -o json | jq '.report.vulnerabilities[] | "\(.vulnerabilityID) - \(.resource) - \(.severity) - Fix: \(.fixedVersion)"'
+
