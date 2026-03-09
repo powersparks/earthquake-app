@@ -28,7 +28,7 @@ backend:
   enabled: true
   replicaCount: 1
   image:
-    repository: powersparks/earthquake-backend
+    repository: parksharley11873/earthquake-backend
     tag: "latest"
     pullPolicy: IfNotPresent
   service:
@@ -40,7 +40,7 @@ frontend:
   enabled: true
   replicaCount: 1
   image:
-    repository: powersparks/earthquake-frontend
+    repository: parksharley11873/earthquake-frontend
     tag: "latest"
     pullPolicy: IfNotPresent
   service:
