@@ -11,6 +11,7 @@ if [[ -z "$DOCKER_USERNAME" ]]; then
   echo ""
   echo "Examples:"
   echo "  $0 powersparks"
+  echo " $0 parksharley11873"
   echo "  $0 mycompanyaccount"
   echo ""
   echo "This will build both backend and frontend images with --platform linux/amd64"
