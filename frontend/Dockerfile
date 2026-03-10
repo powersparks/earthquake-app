@@ -1,51 +1,96 @@
-FROM node:18-alpine AS builder
+# syntax=docker/dockerfile:1
 
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Dockerfile reference guide at
+# https://docs.docker.com/go/dockerfile-reference/
+
+# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
+
+ARG NODE_VERSION=22.11.0
+ARG PNPM_VERSION=10.30.2
+
+################################################################################
+# Use node image for base image for all stages.
+FROM node:${NODE_VERSION}-alpine AS base
+
+# Set working directory for all build stages.
 WORKDIR /app
 
-# Copy package files
-COPY package.json package-lock.json* yarn.lock* ./
 
-# NOTE: if you don't have the certs or don't need them, comment out
-RUN npm set strict-ssl false
-# COPY ./cert/Zscaler-bundle.pem /usr/local/share/ca-certificates/Zscaler-bundle.crt  
-# ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/Zscaler-bundle.crt
-# Install dependencies
-RUN npm ci
+ARG NEXT_PUBLIC_API_URL=http://earthquake-app-earthquake-app-chart-backend.default.svc.cluster.local:8000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL 
+# RUN npm set strict-ssl false
+COPY ./cert/Zscaler-bundle.pem /usr/local/share/ca-certificates/Zscaler-bundle.crt  
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/Zscaler-bundle.crt
 
-# Copy source code
+# Install pnpm.
+RUN --mount=type=cache,target=/root/.npm \
+    npm install -g pnpm@${PNPM_VERSION}
+
+################################################################################
+# Create a stage for installing production dependecies.
+FROM base AS deps
+
+# Download dependencies as a separate step to take advantage of Docker's caching.
+# Leverage a cache mount to /root/.local/share/pnpm/store to speed up subsequent builds.
+# Leverage bind mounts to package.json and pnpm-lock.yaml to avoid having to copy them
+# into this layer.
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --prod --frozen-lockfile
+
+################################################################################
+# Create a stage for building the application.
+FROM deps AS build
+
+# Download additional development dependencies before building, as some projects require
+# "devDependencies" to be installed to build. If you don't need this, remove this step.
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=pnpm-lock.yaml,target=pnpm-lock.yaml \
+    --mount=type=cache,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
+
+# Copy the rest of the source files into the image.
 COPY . .
-
-ARG NEXT_PUBLIC_API_URL=http://earthquake-app-earthquake-app-chart-backend.default.svc.cluster.local:8000
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-# Build Next.js app
-RUN npm run build
-
-# Production stage
-FROM node:18-alpine
-#env:
-
+# Run the build script.
 ARG NEXT_PUBLIC_API_URL=http://earthquake-app-earthquake-app-chart-backend.default.svc.cluster.local:8000
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
-WORKDIR /app
+RUN pnpm run build
 
-# Copy package files
-COPY package.json package-lock.json* yarn.lock* ./
+################################################################################
+# Create a new stage to run the application with minimal runtime dependencies
+# where the necessary files are copied from the build stage.
+FROM base AS final
 
-# Install production dependencies only
-RUN npm ci --only=production
+# Use production node environment by default.
+ENV NODE_ENV=production
 
-# Copy built app from builder
-COPY --from=builder /app/.next ./.next
-# Copy public if it exists (optional)
-## COPY --from=builder /app/public ./public 2>/dev/null || true
-RUN if [ -d /app/public ]; then cp -r /app/public ./public; fi
-# Expose port
+# Run the application as a non-root user.
+USER node
+
+# Copy package.json so that package manager commands can be used.
+COPY package.json .
+
+# Copy the production dependencies from the deps stage and also
+# the built application from the build stage into the image.
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=build /app/.next ./.next
+
+
+# Expose the port that the application listens on.
+ENV HOSTNAME=0.0.0.0
 EXPOSE 3000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+# Run the application.
+CMD pnpm start
 
-# Run the application
-CMD ["npm", "start"]
+## docker builder prune -a
+# if building for a cloud server with different architecture
+## docker build --platform=linux/amd64 --no-cache --progress=plain -t basic-nextjs-app .   
+# normall build locally
+## docker build --no-cache --progress=plain -t basic-nextjs-app:latest . 
+# check it in browser
+# docker run -d -p 3000:3000 --name basic-nextjs-app basic-nextjs-app
+# docker stop basic-nextjs-app
