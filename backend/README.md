@@ -33,7 +33,21 @@ FastAPI backend for fetching, processing, and storing USGS earthquake data.
    ```bash
    uv run uvicorn main:app --reload --host 0.0.0.0 --port 8000
    ```
-
+```
+└── 📁backend
+    ├── .gitignore
+    ├── config.py
+    ├── database.py
+    ├── Dockerfile
+    ├── docs.png
+    ├── main.py
+    ├── models.py
+    ├── pyproject.toml
+    ├── README.md
+    ├── schemas.py
+    ├── usgs_client.py
+    └── uv.lock
+```
 5. **Access API documentation:**
    - Swagger UI: http://localhost:8000/docs
    - ReDoc: http://localhost:8000/redoc

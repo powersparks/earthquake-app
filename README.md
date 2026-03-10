@@ -56,10 +56,12 @@ helm install trivy-operator aquasecurity/trivy-operator \
 read only on the private images:
   dckr_pat_B6cehqUjPOicNZhtj4iGTHAD-kM
 
+kubectl get vulnerabilityreport -n default
+
 kubectl get vulnerabilityreport -n default -o json | jq '.items[] | {image: .report.artifact.repository, vulnerabilities: .report.vulnerabilities[] | {cve: .vulnerabilityID, severity: .severity, package: .resource, fixedVersion: .fixedVersion}}' > vulnerabilities.json
 
 
-  kubectl get vulnerabilityreport replicaset-574d86cd58 -n default -o json | jq '.report.vulnerabilities[] | "\(.vulnerabilityID) - \(.resource) - \(.severity) - Fix: \(.fixedVersion)"'
+  kubectl get vulnerabilityreport replicaset-6f448b5c89 -n default -o json | jq '.report.vulnerabilities[] | "\(.vulnerabilityID) - \(.resource) - \(.severity) - Fix: \(.fixedVersion)"'
 
   kubectl port-forward svc/earthquake-app-earthquake-app-chart-frontend  3000:3000  
 
