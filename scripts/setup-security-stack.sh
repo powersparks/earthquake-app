@@ -13,6 +13,7 @@ echo "[1/4] Creating monitoring namespace..."
 kubectl create namespace monitoring 2>/dev/null || echo "Namespace already exists"
 
 # 2. Install Prometheus + Grafana (provides ServiceMonitor CRD needed by Trivy)
+#helm upgrade --install prom prometheus-community/kube-prometheus-stack -n monitoring --create-namespace -f "./prometheus-values.yaml" --wait  --timeout 5m
 echo "[2/4] Installing Prometheus + Grafana..."
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 2>/dev/null || true
 helm repo update
@@ -23,6 +24,8 @@ helm upgrade --install prom prometheus-community/kube-prometheus-stack \
   --timeout 5m
 
 # 3. Install Trivy Operator (now ServiceMonitor CRD is available)
+# helm upgrade --install trivy-operator aqua/trivy-operator -n trivy-system --create-namespace -f "./trivy-values.yaml" --wait  --timeout 5m
+
 echo "[3/4] Installing Trivy Operator..."
 helm repo add aqua https://aquasecurity.github.io/helm-charts/ 2>/dev/null || true
 helm repo update
