@@ -17,6 +17,8 @@ fi
 echo "[1/3] Uninstalling Helm releases..."
 helm uninstall prom -n monitoring 2>/dev/null || echo "Prometheus not found"
 helm uninstall trivy-operator -n trivy-system 2>/dev/null || echo "Trivy Operator not found"
+kubectl delete all --all -n monitoring --force
+kubectl delete all --all -n trivy-system --force
 
 # 2. Delete namespaces
 echo "[2/3] Deleting namespaces..."

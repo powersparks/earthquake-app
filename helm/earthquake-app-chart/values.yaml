@@ -111,7 +111,7 @@ ingress:
   className: ""
   annotations: {}
   hosts:
-    - host: chart-example.local
+    - host: earthquakes-example.bah.com
       paths:
         - path: /
           pathType: ImplementationSpecific

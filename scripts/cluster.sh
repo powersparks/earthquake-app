@@ -156,6 +156,17 @@ install_argocd() {
   # Wait for ArgoCD to be ready
   echo "Waiting for ArgoCD to be ready..."
   kubectl wait --for=condition=available --timeout=300s deployment/argocd-server -n "$ARGOCD_NAMESPACE"
+### Port Forward ArgoCD service
+echo "Port Forward ArcoCD service:"
+echo "kubectl port-forward service/argocd-server -n argocd 6443:443"
+echo "Get the current password for user name: admin"
+echo "kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+" 
+### Port Forward backend serivce
+echo "kubectl port-forward svc/earthquake-app-earthquake-app-chart-backend  8000:8000"
+
+### Port Forward frontend service 
+echo "kubectl port-forward svc/earthquake-app-earthquake-app-chart-frontend  3300:3000"
 }
 
 deploy_app() {
@@ -191,7 +202,7 @@ teardown_docker_desktop() {
   helm uninstall $CHART 2>/dev/null || true
   done
   sleep 10
-  kubectl delete all --all -n "$NAMESPACE" 2>/dev/null || true
+  kubectl delete all --all -n "$NAMESPACE" --force 2>/dev/null || true
   echo "Uninstall ARGOCD and delete argocd namespace..."
   helm uninstall argocd -n "$ARGOCD_NAMESPACE" 2>/dev/null || true
   kubectl delete namespace "$ARGOCD_NAMESPACE" 2>/dev/null || true
