@@ -10,7 +10,7 @@ DOCKER_PAT="${2:-}"
 if [[ -z "$DOCKER_USERNAME" || -z "$DOCKER_PAT" ]]; then
   echo "Usage: $0 <docker-username> <docker-pat>"
   echo ""
-  echo "Creates Docker Hub image pull secrets in both default and trivy-system namespaces"
+  echo "Creates Docker Hub image pull secrets in default, trivy-system, and argocd namespaces"
   echo ""
   echo "Arguments:"
   echo "  docker-username  - Docker Hub username (e.g., parksharley11873)"
@@ -27,14 +27,14 @@ if [[ -z "$DOCKER_USERNAME" || -z "$DOCKER_PAT" ]]; then
   exit 1
 fi
 
-echo "=== Creating Docker Hub Image Pull Secrets ==="
+echo "=== Creating Docker Hub Secrets ==="
 echo ""
 echo "Username: $DOCKER_USERNAME"
 echo "PAT: ${DOCKER_PAT:0:20}..."
 echo ""
 
 # Create secret in default namespace
-echo "[1/2] Creating secret in default namespace..."
+echo "[1/3] Creating docker-registry secret in default namespace..."
 kubectl create secret docker-registry dockerhub-secret \
   --docker-server=docker.io \
   --docker-username="$DOCKER_USERNAME" \
@@ -44,7 +44,7 @@ kubectl create secret docker-registry dockerhub-secret \
   2>/dev/null || echo "Secret already exists in default namespace"
 
 # Create secret in trivy-system namespace
-echo "[2/2] Creating secret in trivy-system namespace..."
+echo "[2/3] Creating docker-registry secret in trivy-system namespace..."
 kubectl create secret docker-registry dockerhub-secret \
   --docker-server=docker.io \
   --docker-username="$DOCKER_USERNAME" \
@@ -53,12 +53,30 @@ kubectl create secret docker-registry dockerhub-secret \
   --namespace=trivy-system \
   2>/dev/null || echo "Secret already exists in trivy-system namespace"
 
+# Create ArgoCD repository credentials secret
+echo "[3/3] Creating ArgoCD repo-creds secret in argocd namespace..."
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: docker-repo-creds
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repo-creds
+type: Opaque
+stringData:
+  url: https://docker.io
+  username: $DOCKER_USERNAME
+  password: $DOCKER_PAT
+EOF
+
 echo ""
 echo "=== Secrets Created ==="
 echo ""
 echo "Verify with:"
 echo "  kubectl get secret dockerhub-secret -n default"
 echo "  kubectl get secret dockerhub-secret -n trivy-system"
+echo "  kubectl get secret docker-repo-creds -n argocd"
 echo ""
 echo "Delete pods to force image pull with new credentials:"
 echo "  kubectl delete pod -n default -l app.kubernetes.io/component=frontend"
