@@ -31,10 +31,10 @@ backend:
     - name: dockerhub-secret
   image:
     imagePullSecrets:
-      - name: dockerhub-secret2
+      - name: dockerhub-secret
     repository: powersparks/earthquake-backend
     tag: "latest"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always # IfNotPresent
   service:
     type: ClusterIP
     port: 8000
