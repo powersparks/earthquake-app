@@ -27,7 +27,11 @@ service:
 backend:
   enabled: true
   replicaCount: 1
+  imagePullSecrets:
+    - name: dockerhub-secret
   image:
+    imagePullSecrets:
+      - name: dockerhub-secret2
     repository: powersparks/earthquake-backend
     tag: "latest"
     pullPolicy: IfNotPresent
@@ -40,9 +44,11 @@ frontend:
   enabled: true
   replicaCount: 1
   image:
+    imagePullSecrets:
+      - name: dockerhub-secret
     repository: powersparks/earthquake-frontend
     tag: "latest"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always # IfNotPresent
   service:
     type: NodePort
     port: 3000
