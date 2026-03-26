@@ -33,8 +33,15 @@ echo "Username: $DOCKER_USERNAME"
 echo "PAT: ${DOCKER_PAT:0:20}..."
 echo ""
 
+# Create namespaces if they don't exist
+echo "[0/4] Creating namespaces..."
+kubectl create namespace default 2>/dev/null || true
+kubectl create namespace trivy-system 2>/dev/null || true
+kubectl create namespace argocd 2>/dev/null || true
+echo ""
+
 # Create secret in default namespace
-echo "[1/3] Creating docker-registry secret in default namespace..."
+echo "[1/4] Creating docker-registry secret in default namespace..."
 kubectl create secret docker-registry dockerhub-secret \
   --docker-server=docker.io \
   --docker-username="$DOCKER_USERNAME" \
@@ -44,7 +51,7 @@ kubectl create secret docker-registry dockerhub-secret \
   2>/dev/null || echo "Secret already exists in default namespace"
 
 # Create secret in trivy-system namespace
-echo "[2/3] Creating docker-registry secret in trivy-system namespace..."
+echo "[2/4] Creating docker-registry secret in trivy-system namespace..."
 kubectl create secret docker-registry dockerhub-secret \
   --docker-server=docker.io \
   --docker-username="$DOCKER_USERNAME" \
@@ -54,7 +61,7 @@ kubectl create secret docker-registry dockerhub-secret \
   2>/dev/null || echo "Secret already exists in trivy-system namespace"
 
 # Create ArgoCD repository credentials secret
-echo "[3/3] Creating ArgoCD repo-creds secret in argocd namespace..."
+echo "[3/4] Creating ArgoCD repo-creds secret in argocd namespace..."
 kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Secret
