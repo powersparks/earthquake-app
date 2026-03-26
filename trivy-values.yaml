@@ -55,11 +55,11 @@ policiesBundle:
   repository: "aquasec/trivy-checks"
   tag: "1"
 
-nodeCollector:
-  useNodeSelector: true
-  registry: "docker.io"
-  repository: "aquasec/node-collector"
-  tag: "0.3.1"
+# nodeCollector:
+#   useNodeSelector: true
+#   registry: "docker.io"
+#   repository: "aquasec/node-collector"
+#   tag: "latest" # "0.3.1"
 
 operator:
   metricsVulnIdEnabled: true
