@@ -32,7 +32,7 @@ backend:
   image:
     repository: powersparks/earthquake-backend
     tag: "latest"
-    pullPolicy: IfNotPresent
+    pullPolicy: Always # IfNotPresent
   nodeSelector:
     kubernetes.io/arch: amd64
   service:
