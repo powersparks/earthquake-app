@@ -30,7 +30,7 @@ backend:
   image:
     repository: docker.io/powersparks/earthquake-backend
     tag: "latest"
-    pullPolicy: Always # IfNotPresent
+    pullPolicy: IfNotPresent
   imagePullSecrets:
     - name: dockerhub-secret
   service:
