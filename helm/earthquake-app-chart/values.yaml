@@ -40,9 +40,11 @@ frontend:
   enabled: true
   replicaCount: 1
   image:
-    repository: index.docker.io/v1/powersparks/earthquake-frontend
+    repository: powersparks/earthquake-frontend
     tag: "latest"
     pullPolicy: Always # IfNotPresent
+  imagePullSecrets:
+   - name: dockerhub-regcred
   service:
     type: NodePort
     port: 3000
