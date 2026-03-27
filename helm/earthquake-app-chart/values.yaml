@@ -27,10 +27,14 @@ service:
 backend:
   enabled: true
   replicaCount: 1
+  imagePullSecrets:
+    - name: dockerhub-regcred
   image:
     repository: powersparks/earthquake-backend
     tag: "latest"
     pullPolicy: IfNotPresent
+  nodeSelector:
+    kubernetes.io/arch: amd64
   service:
     type: ClusterIP
     port: 8000
@@ -45,6 +49,8 @@ frontend:
     repository: powersparks/earthquake-frontend
     tag: "latest"
     pullPolicy: IfNotPresent
+  nodeSelector:
+    kubernetes.io/arch: amd64
   service:
     type: NodePort
     port: 3000
