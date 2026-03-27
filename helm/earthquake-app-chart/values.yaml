@@ -31,8 +31,6 @@ backend:
     repository: powersparks/earthquake-backend
     tag: "latest"
     pullPolicy: IfNotPresent
-  imagePullSecrets:
-    - name: dockerhub-regcred
   service:
     type: ClusterIP
     port: 8000
@@ -45,8 +43,6 @@ frontend:
     repository: powersparks/earthquake-frontend
     tag: "latest"
     pullPolicy: Always # IfNotPresent
-  imagePullSecrets:
-    - name: dockerhub-regcred
   service:
     type: NodePort
     port: 3000
@@ -70,8 +66,8 @@ postgresql:
     size: 10Gi
 
 # Image pull secrets
-# imagePullSecrets:
-#   - name: dockerhub-regcred
+imagePullSecrets:
+  - name: dockerhub-regcred
 
 # Resources
 resources: {}
