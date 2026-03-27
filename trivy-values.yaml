@@ -5,6 +5,7 @@ image:
   pullPolicy: IfNotPresent
 
 trivy:
+ 
   dbRegistry: "docker.io"
   dbRepository: "aquasec/trivy-db"
   javaDbRegistry: "docker.io"
@@ -63,3 +64,6 @@ policiesBundle:
 
 operator:
   metricsVulnIdEnabled: true
+  privateRegistryScanSecretsNames:
+    default: dockerhub-regcred
+   
