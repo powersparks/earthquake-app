@@ -43,8 +43,6 @@ frontend:
     repository: powersparks/earthquake-frontend
     tag: "latest"
     pullPolicy: Always # IfNotPresent
-  imagePullSecrets:
-   - name: dockerhub-regcred
   service:
     type: NodePort
     port: 3000
