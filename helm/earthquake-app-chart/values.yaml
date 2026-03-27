@@ -70,8 +70,8 @@ postgresql:
     size: 10Gi
 
 # Image pull secrets
-imagePullSecrets:
-  - name: dockerhub-secret
+# imagePullSecrets:
+#   - name: dockerhub-regcred
 
 # Resources
 resources: {}
