@@ -34,7 +34,7 @@ backend:
     tag: "latest"
     pullPolicy: Always # IfNotPresent
     architecture: amd64
-    platform: amd64
+    platform: linux/amd64
   nodeSelector:
     kubernetes.io/arch: amd64
   service:
