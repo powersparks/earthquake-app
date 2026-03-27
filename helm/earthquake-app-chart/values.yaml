@@ -42,7 +42,7 @@ frontend:
   imagePullSecrets:
     - name: dockerhub-regcred
   image:
-    repository: index.docker.io/v1/powersparks/earthquake-frontend
+    repository: powersparks/earthquake-frontend
     tag: "latest"
     pullPolicy: Always # IfNotPresent
   service:
