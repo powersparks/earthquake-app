@@ -33,6 +33,7 @@ backend:
     repository: powersparks/earthquake-backend
     tag: "latest"
     pullPolicy: Always # IfNotPresent
+    architecture: amd64
   nodeSelector:
     kubernetes.io/arch: amd64
   service:
@@ -49,6 +50,7 @@ frontend:
     repository: powersparks/earthquake-frontend
     tag: "latest"
     pullPolicy: Always # IfNotPresent
+    architecture: amd64
   nodeSelector:
     kubernetes.io/arch: amd64
   service:
