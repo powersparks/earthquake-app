@@ -44,7 +44,7 @@ frontend:
   image:
     repository: powersparks/earthquake-frontend
     tag: "latest"
-    pullPolicy: Always # IfNotPresent
+    pullPolicy: IfNotPresent
   service:
     type: NodePort
     port: 3000
