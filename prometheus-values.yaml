@@ -3,3 +3,6 @@ prometheus:
     serviceMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelector: {}
     serviceMonitorNamespaceSelector: {}
+prometheus-node-exporter:
+  hostRootFsMount:
+    enabled: false

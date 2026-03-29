@@ -1,21 +1,34 @@
 image:
   registry: "docker.io"
   repository: "aquasec/trivy-operator"
-  tag: ""
+  tag: "0.30.1"
   pullPolicy: IfNotPresent
+  pullSecrets:
+    - name: dockerhub-regcred
+  
 
 trivy:
- 
-  dbRegistry: "docker.io"
-  dbRepository: "aquasec/trivy-db"
-  javaDbRegistry: "docker.io"
-  javaDbRepository: "aquasec/trivy-java-db"
+  dbRegistry: public.ecr.aws
+  dbRepository: aquasecurity/trivy-db
+  # dbRegistry: "docker.io"
+  # dbRepository: "aquasec/trivy-db" #tags latest and 2 exist
+  javaDbRegistry: public.ecr.aws
+  javaDbRepository: aquasecurity/trivy-java-db
+  # javaDbRegistry: "docker.io"
+  # javaDbRepository: "aquasec/trivy-java-db" #tag 1 exist only
+  env:
+    - name: DOCKER_CONFIG
+      value: /root/.docker
   image:
     registry: "docker.io"
     repository: "aquasec/trivy"
-    tag: "latest"
+    tag: 0.69.3 # canary
     pullPolicy: IfNotPresent
-  
+    imagePullSecret: dockerhub-regcred
+  # Add auth for the DB repo
+  skipDBUpdate: false
+  # Trivy will read /etc/trivy/.dockerconfigjson automatically
+  registryInsecure: false 
   vulnType: "os,library"
   severity: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
   ignoreUnfixed: false
@@ -35,12 +48,37 @@ trivy:
       limits:
         cpu: 1
         memory: 1Gi
-
+ 
 scanJob:
-  image:
-    tag: "latest"
+  # image:
+  #   tag: "latest"
   scanners:
     - Vulnerability
+  # env:
+  #   - name: DOCKER_CONFIG
+  #     value: /root/.docker
+  #   - name: HOME
+  #     value: /root
+  # volumeMounts:
+  #   - name: dockerconfig
+  #     mountPath: /root/.docker
+  #     readOnly: true
+  #   - name: trivy-cache
+  #     mountPath: /root/.cache/trivy
+  # volumes:
+  #   - name: dockerconfig
+  #     secret:
+  #       secretName: dockerhub-regcred
+  #       items:
+  #         - key: .dockerconfigjson
+  #           path: config.json
+  #       defaultMode: 0644
+ 
+    # - name: dockerconfig
+    #   secret:
+    #     secretName: dockerhub-regcred
+    #     defaultMode: 0644
+
 
 serviceMonitor:
   enabled: true
@@ -56,14 +94,34 @@ policiesBundle:
   repository: "aquasec/trivy-checks"
   tag: "1"
 
-# nodeCollector:
-#   useNodeSelector: true
-#   registry: "docker.io"
-#   repository: "aquasec/node-collector"
-#   tag: "latest" # "0.3.1"
+nodeCollector:
+  useNodeSelector: true
+  registry: "ghcr.io"
+  repository: "aquasecurity/node-collector" # "aquasec/node-collector"
+  tag: "0.3.1"
 
 operator:
+  builtInTrivyServer: true # false standalone | true clientserver
   metricsVulnIdEnabled: true
-  privateRegistryScanSecretsNames:
-    default: dockerhub-regcred
-   
+  scanJobTTLSecondsAfterFinished: 300
+  privateRegistryScanSecretsNames: { "default": "dockerhub-regcred","trivy-system": "dockerhub-regcred" }
+  # privateRegistryScanSecretsNames: 
+  #   default: dockerhub-regcred
+  #   trivy-system: dockerhub-regcred
+  
+  scanJobsConcurrencyLimit: 1
+  accessGlobalSecretsAndServiceAccount: true
+  
+  # scanJobTTLSecondsAfterFinished: 300
+  vulnerabilityReports:
+    scanJobsInSameNamespace: true
+  # helm upgrade trivy-operator aqua/trivy-operator \  -n trivy-system \
+  # -f trivy-values.yaml \
+  # --set="trivy.command=filesystem" \
+  # --set="trivyOperator.scanJobPodTemplateContainerSecurityContext.runAsUser=0"
+  
+  # kubectl delete vulnerabilityreport -n default --all --ignore-not-found
+  # kubectl rollout restart deployment -n trivy-system trivy-operator
+  # kubectl rollout restart deployment -n default earthquake-app-earthquake-app-chart-backend
+  # kubectl rollout restart deployment -n default earthquake-app-earthquake-app-chart-frontend
+  # kubectl rollout restart statefulset -n default earthquake-app-earthquake-app-chart-postgres

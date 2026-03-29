@@ -70,3 +70,4 @@ kubectl get vulnerabilityreport replicaset-574d86cd58 -n default -o json | jq '.
   kubectl port-forward service/argocd-server -n argocd 6443:443 
 
 
+kubectl get secret dockerhub-regcred -n trivy-system -o jsonpath='{.data.\.dockerconfigjson}' | base64 -d | jq .

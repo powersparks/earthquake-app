@@ -40,23 +40,23 @@ kubectl create namespace trivy-system 2>/dev/null || true
 kubectl create namespace argocd 2>/dev/null || true
 echo ""
 
-# Create secret in default namespace
+# Create secret in default namespace https://index.docker.io/v1
 echo "[1/4] Creating docker-registry secret in default namespace..."
-kubectl create secret docker-registry dockerhub-secret \
-  --docker-server=docker.io \
+kubectl create secret docker-registry dockerhub-regcred \
+  --docker-server=index.docker.io \
   --docker-username="$DOCKER_USERNAME" \
   --docker-password="$DOCKER_PAT" \
-  --docker-email=user@example.com \
+  --docker-email=powersparks@gmail.com \
   --namespace=default \
   2>/dev/null || echo "Secret already exists in default namespace"
 
 # Create secret in trivy-system namespace
 echo "[2/4] Creating docker-registry secret in trivy-system namespace..."
-kubectl create secret docker-registry dockerhub-secret \
-  --docker-server=docker.io \
+kubectl create secret docker-registry dockerhub-regcred \
+  --docker-server=index.docker.io  \
   --docker-username="$DOCKER_USERNAME" \
   --docker-password="$DOCKER_PAT" \
-  --docker-email=user@example.com \
+  --docker-email=powersparks@gmail.com \
   --namespace=trivy-system \
   2>/dev/null || echo "Secret already exists in trivy-system namespace"
 
@@ -72,17 +72,18 @@ metadata:
     argocd.argoproj.io/secret-type: repo-creds
 type: Opaque
 stringData:
-  url: https://docker.io
+  url: https://docker.io 
   username: $DOCKER_USERNAME
   password: $DOCKER_PAT
 EOF
+#EOF
 
 echo ""
 echo "=== Secrets Created ==="
 echo ""
 echo "Verify with:"
-echo "  kubectl get secret dockerhub-secret -n default"
-echo "  kubectl get secret dockerhub-secret -n trivy-system"
+echo "  kubectl get secret dockerhub-regcred -n default"
+echo "  kubectl get secret dockerhub-regcred -n trivy-system"
 echo "  kubectl get secret docker-repo-creds -n argocd"
 echo ""
 echo "Delete pods to force image pull with new credentials:"
